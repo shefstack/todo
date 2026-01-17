@@ -1,10 +1,13 @@
-import Image from "next/image";
-import Link from "next/link";
+import { authOptions } from "@/lib/auth"
+import { getServerSession } from "next-auth"
+import { redirect } from "next/navigation"
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <Link href="/todos">Go to Todo List</Link>
-    </div>
-  );
+export default async function HomePage() {
+  const session = await getServerSession(authOptions)
+
+  if (!session) {
+    redirect("/auth")
+  }
+
+  redirect("/todos")
 }

@@ -1,6 +1,9 @@
 import TodoActions from "./AddTodoActions"
 import EditTodoActions from "./EditTodoActions"
-
+import { getServerSession } from "next-auth"
+import { redirect } from "next/navigation"
+import LogoutButton from "./Logout"
+import { authOptions } from "@/lib/auth"
 async function getTodos() {
   const res = await fetch("http://localhost:3000/api/todos", {
     cache: "no-store",
@@ -13,6 +16,11 @@ async function getTodos() {
 
 
 export default async function TodosPage() {
+
+  const session = await getServerSession(authOptions)
+  if (!session) {
+    redirect("/auth")
+  }
   const todos = await getTodos()
 
   return (
@@ -54,7 +62,9 @@ export default async function TodosPage() {
             )}
           </ul>
         </div>
-
+        <div className="mt-6 flex justify-center">
+          <LogoutButton />
+        </div>
       </div>
     </main>
   )

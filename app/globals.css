@@ -24,3 +24,96 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Register page styles */
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.register-page > h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.register-form {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.18);
+}
+
+.btn {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--foreground);
+  color: var(--background);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+  .register-form {
+    background: rgba(255,255,255,0.03);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  }
+  .input {
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+}
+
+/* Auth page reuses register styles but add small tweaks */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(0,0,0,0.03);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form > h1 {
+  text-align: center;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.auth-form a {
+  color: inherit;
+  text-decoration: underline;
+}
