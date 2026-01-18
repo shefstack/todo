@@ -15,14 +15,15 @@ export default function RegisterPage() {
         e.preventDefault()
         setLoading(true)
         setStatus({ message: "", isError: false })
-
+setEmail("")
+setPassword("")
         try {
             const res = await axios.post('/api/register', { email, password })
             if (res.status === 201) {
                 setStatus({ message: 'Registration successful! Redirecting...', isError: false })
                 setEmail("")
                 setPassword("")
-                // Small delay so user can read the success message
+              
                 setTimeout(() => router.replace('/auth'), 2000)
             }
         } catch (err: any) {

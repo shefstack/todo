@@ -5,51 +5,62 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 export default function AuthPage() {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [errorMessage, setErrorMessage] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
-    const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [errorMessage, setErrorMessage] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+const router = useRouter()
 
-    async function handleLogin(e: React.FormEvent) {
-        e.preventDefault()
-        setErrorMessage("")
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault()
+    setErrorMessage("")
         setIsLoading(true)
 
-        try {
+    try {
             const res = await signIn("credentials", {
-                email,
-                password,
-                redirect: false,
+        email,
+        password,
+        redirect: false,
             })
 
-            if (!res) {
-                setErrorMessage("Sign in failed. Please try again.")
+      if (!res) {
+        setErrorMessage("Sign in failed. Please try again.")
                 setIsLoading(false)
-                return
-            }
+        return
+      }
 
-            if (!res.ok) {
-                const err = String(res.error || "")
-                // Custom error messaging logic
-                if (res.status === 401) {
-                    setErrorMessage("Invalid email or password.")
-                } else {
-                    setErrorMessage(err || "An unexpected error occurred.")
-                }
-                setIsLoading(false)
-                return
-            }
-
-            // Success
-            router.replace("/todos")
-        } catch (err) {
-            setErrorMessage("An unexpected error occurred. Please try again.")
-            setIsLoading(false)
+      if (!res.ok) {
+        const err = String(res.error || "Invalid credentials")
+        const status = res.status
+        if (status === 404 || /no user|not found|no account|user/i.test(err)) {
+          setErrorMessage("No account found with this email.")
+          return
         }
-    }
 
-    return (
+        if (status === 401 || /invalid credentials|wrong password|incorrect password/i.test(err)) {
+          setErrorMessage("The password you entered is incorrect.")
+          return
+        }
+
+        setErrorMessage(res.error || "An unexpected error occurred. Please try again.")
+        return
+      }
+
+      // success — only navigate if there's no error present
+      if (res.ok && !errorMessage) {
+        setEmail("")
+        setPassword("")
+        router.replace("/todos")
+      }
+    } catch (err) {
+      setErrorMessage("An unexpected error occurred. Please try again.")
+    }
+    if(!email || !password){
+      setErrorMessage("Please enter both email and password.")
+      return
+    }
+  }
+      return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
             <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
                 <div>
@@ -89,7 +100,7 @@ export default function AuthPage() {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
-                  
+                   
 
                     {errorMessage && (
                         <div className="bg-red-50 text-red-600 text-sm p-3 rounded-md text-center border border-red-100">
@@ -124,4 +135,35 @@ export default function AuthPage() {
             </div>
         </div>
     )
+
+  // return (
+  //   <div className="auth-page">
+  //     <form className="auth-form" onSubmit={handleLogin}>
+  //       <h1>Login</h1>
+  //       <input
+  //         className="input"
+  //         type="email"
+  //         placeholder="Email"
+  //         value={email}
+  //         onChange={(e) => setEmail(e.target.value)}
+  //         required
+  //       />
+  //       <input
+  //         className="input"
+  //         type="password"
+  //         placeholder="Password"
+  //         value={password}
+  //         onChange={(e) => setPassword(e.target.value)}
+  //         required
+  //       />
+  //       <button className="btn" type="submit" disabled={!!errorMessage}>
+  //         Login
+  //       </button>
+  //       <div style={{ marginTop: 8, textAlign: "center" }}>
+  //         {errorMessage && <p className="text-red-500 mb-2 text-center">{errorMessage}</p>}
+  //         <Link href="/register">Create Account</Link>
+  //       </div>
+  //     </form>
+  //   </div>
+  // )
 }
