@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma"
 import Credentials from "next-auth/providers/credentials"
 import { stat } from "fs"
  export const authOptions: NextAuthOptions = {
+    secret: process.env.NEXTAUTH_SECRET,
+  
     session: {
         strategy: "jwt",
     },
