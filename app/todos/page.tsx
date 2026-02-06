@@ -4,13 +4,15 @@ import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import LogoutButton from "./Logout"
 import { authOptions } from "@/lib/auth"
-async function getTodos() {
-  const res = await fetch("http://localhost:3000/api/todos", {
-    cache: "no-store",
+import { prisma } from "@/lib/prisma"
+
+async function getTodos(userId: string) {
+  const todos = await prisma.todo.findMany({
+    where: {
+      userId,
+    },
   })
-// console.log(res)
-  if (!res.ok) throw new Error("Failed to fetch todos")
-  return res.json()
+  return todos
 }
 
 
@@ -21,17 +23,23 @@ export default async function TodosPage() {
   if (!session) {
     redirect("/auth")
   }
-  const todos = await getTodos()
+  const todos = await getTodos(session.user?.id as string)
 
   return (
     <main className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden p-6 border border-gray-100">
         
-         <header className="mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-            My Tasks
-          </h1>
-          <p className="text-gray-500 text-sm mt-1">Keep track of your daily goals</p>
+        <header className="flex justify-between items-start mb-8">
+          <div>
+            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+              My Tasks
+            </h1>
+            <p className="text-gray-500 text-sm mt-1">Keep track of your daily goals</p>
+          </div>
+          
+          <div className="flex-shrink-0">
+            <LogoutButton />
+          </div>
         </header>
        <div className="mb-8">
           <TodoActions />
@@ -50,8 +58,8 @@ export default async function TodosPage() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-                    <span className="text-gray-700 font-medium group-hover:text-blue-700" style={item.completed ? { textDecoration: 'line-through', color: '#9CA3AF' } : {}}>
-                      {item.todoItem}
+                    <span className="text-gray-800 font-medium group-hover:text-blue-700" style={item.completed ? { textDecoration: 'line-through', color: '#9CA3AF' } : {}}>
+                      {item.title}
                     </span>
                   </div>
                   <div className="ml-4 text-sm text-gray-400 flex-shrink-0">
@@ -62,9 +70,7 @@ export default async function TodosPage() {
             )}
           </ul>
         </div>
-        <div className="mt-6 flex justify-center">
-          <LogoutButton />
-        </div>
+       
       </div>
     </main>
   )

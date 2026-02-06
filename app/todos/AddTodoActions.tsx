@@ -13,32 +13,27 @@ export default function TodoActions() {
     async function addTodo() {
         const trimmedValue = inputValue.trim();
 
-        const newTodo = { id: nanoid(8), todoItem: trimmedValue, completed: false }
+        if (!trimmedValue) {
+            setInputError(true);
+            return;
+        }
 
-    if (trimmedValue) {
+        const payload = { title: trimmedValue }
+
         const response = await fetch('/api/todos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newTodo)
+            body: JSON.stringify(payload)
         })
 
         if (!response.ok) {
             setError(true);
-            console.error("Failed to add todo");
-            return;
-        }
-    }
-
-        if (!trimmedValue ) {
-            setInputError(true);
+            console.error('Failed to add todo', await response.text());
             return;
         }
 
         setInputValue(""); 
         router.refresh();
-
-        const fetchResponse = await fetch('/api/todos');
-console.log(await fetchResponse.json());
     }
 
     return (

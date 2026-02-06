@@ -11,4 +11,16 @@ model User {
   id       String   @id @default(cuid())
   email    String   @unique
   password String
+  role String  @default("user")
+  createdAt  DateTime @default(now())
+  todo Todo[]
+}
+model Todo {
+  id        String @id @default(cuid())
+  title     String
+  completed Boolean
+  userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 }

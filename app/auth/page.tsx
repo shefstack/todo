@@ -10,56 +10,102 @@ export default function AuthPage() {
   const [errorMessage, setErrorMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 const router = useRouter()
+async function handleLogin(e: React.FormEvent) {
+  e.preventDefault()
+setPassword("")
+  if (!email || !password) {
+    setErrorMessage("Please enter both email and password.")
+    return
+  }
 
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault()
-    setErrorMessage("")
-        setIsLoading(true)
+  setIsLoading(true)
+  setErrorMessage("")
 
-    try {
-            const res = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-            })
+  const res = await signIn("credentials", {
+    email,
+    password,
+    redirect: false,
+  })
 
-      if (!res) {
-        setErrorMessage("Sign in failed. Please try again.")
-                setIsLoading(false)
-        return
-      }
-
-      if (!res.ok) {
+  setIsLoading(false)
+  if (!res.ok) {
         const err = String(res.error || "Invalid credentials")
         const status = res.status
         if (status === 404 || /no user|not found|no account|user/i.test(err)) {
           setErrorMessage("No account found with this email.")
+          setIsLoading(false)
           return
         }
 
         if (status === 401 || /invalid credentials|wrong password|incorrect password/i.test(err)) {
           setErrorMessage("The password you entered is incorrect.")
-          return
-        }
+          setIsLoading(false)
+          
+                   setErrorMessage(res.error || "An unexpected error occurred. Please try again.")
+        setIsLoading(false)
+       return
+        }}
+  router.replace("/todos")
+  router.refresh()
+}
 
-        setErrorMessage(res.error || "An unexpected error occurred. Please try again.")
-        return
-      }
+//   async function handleLogin(e: React.FormEvent) {
+//     e.preventDefault()
+//     setErrorMessage("")
+//         setPassword("")
+//         setIsLoading(true)
 
-      // success — only navigate if there's no error present
-      if (res.ok && !errorMessage) {
-        setEmail("")
-        setPassword("")
-        router.replace("/todos")
-      }
-    } catch (err) {
-      setErrorMessage("An unexpected error occurred. Please try again.")
-    }
-    if(!email || !password){
-      setErrorMessage("Please enter both email and password.")
-      return
-    }
-  }
+//     try {
+//             const res = await signIn("credentials", {
+//         email,
+//         password,
+//         redirect: false,
+//             })
+
+//       if (!res) {
+//         setErrorMessage("Sign in failed. Please try again.")
+//                 setIsLoading(false)
+//         return
+//       }
+
+//       if (!res.ok) {
+//         const err = String(res.error || "Invalid credentials")
+//         const status = res.status
+//         if (status === 404 || /no user|not found|no account|user/i.test(err)) {
+//           setErrorMessage("No account found with this email.")
+//           setIsLoading(false)
+//           return
+//         }
+
+//         if (status === 401 || /invalid credentials|wrong password|incorrect password/i.test(err)) {
+//           setErrorMessage("The password you entered is incorrect.")
+//           setIsLoading(false)
+//           return
+//         }
+
+//         setErrorMessage(res.error || "An unexpected error occurred. Please try again.")
+//         setIsLoading(false)
+//         return
+//       }
+
+//       if (res.ok && !errorMessage) {
+       
+//         setIsLoading(false)
+//         router.replace("/todos")
+//         router.refresh()
+//       }
+//     } catch (err) {
+//       setErrorMessage("An unexpected error occurred. Please try again.")
+//       setIsLoading(false)
+//     }
+//     if(!email || !password){
+//       setErrorMessage("Please enter both email and password.")
+//       setIsLoading(false)
+//       return
+//     }
+    
+        
+//   }
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
             <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
@@ -118,7 +164,7 @@ const router = useRouter()
                                 : "bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98]"
                             }`}
                         >
-                            {isLoading ? "Signing in..." : "Login"}
+                            {isLoading  ? "Signing in..." : "Login"}
                         </button>
                     </div>
 

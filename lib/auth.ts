@@ -8,6 +8,22 @@ import { stat } from "fs"
   
     session: {
         strategy: "jwt",
+        maxAge: 30 * 60,
+    },
+    callbacks: {
+        async jwt({ token, user }){
+            if(user){
+                token.id = user.id
+            }
+            return token
+        },
+        async session({ session, token }){
+            if(session.user){
+                session.user.id = token.id as string
+                session.user.role = token.role
+            }
+            return session
+        }
     },
     providers: [
         Credentials({
@@ -38,6 +54,7 @@ import { stat } from "fs"
                     
                 }
             }
+
         })
     ]
 
