@@ -30,7 +30,7 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts",
     "app",
-    "types"
-  ],
+    "types/**/*.d.ts"
+, ".next/dev/components/Navbar.tsx"  ],
   "exclude": ["node_modules"]
 }

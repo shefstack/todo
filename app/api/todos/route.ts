@@ -1,18 +1,23 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function GET(req:Request) {
-    const token = await getToken({
-      req: req as any,
-      secret: process.env.NEXTAUTH_SECRET,
-    })
-    if (!token) {
+    // const token = await getToken({
+    //   req: req as any,
+    //   secret: process.env.NEXTAUTH_SECRET,
+    // })
+    // if (!token) {
+    //   return new Response("Unauthorized", { status: 401 })
+    // }
+    const user = await getCurrentUser()
+    if (!user) {
       return new Response("Unauthorized", { status: 401 })
     }
     const todos = await prisma.todo.findMany({
       where: {
-        userId: token.id as string,
+        userId: user.id as string,
       },
     })
     return NextResponse.json(todos, { status: 200 })
@@ -20,12 +25,16 @@ export async function GET(req:Request) {
 }
 
 export async function POST(req: Request) {
-  const token = await getToken({
-    req: req as any,
-    secret: process.env.NEXTAUTH_SECRET,
-  })
+  // const token = await getToken({
+  //   req: req as any,
+  //   secret: process.env.NEXTAUTH_SECRET,
+  // })
+  const user = await getCurrentUser()
+  if (!user) {
+    return new Response("Unauthorized", { status: 401 })
+  }
 
-  if (!token) {
+  if (!user.id) {
     return new Response("Unauthorized", { status: 401 })
   }
 
@@ -37,7 +46,7 @@ export async function POST(req: Request) {
 
   const todo = await prisma.todo.create({
     data: {
-      userId: token.id as string,
+      userId: user.id as string,
       title,
       completed: false,
     },
@@ -46,13 +55,13 @@ export async function POST(req: Request) {
   return Response.json(todo)
 }
 
-export async function DELETE(request:Request, {params}:{params:{id:string}}){
-    const token = await getToken({
-        req: request as any,
-        secret: process.env.NEXTAUTH_SECRET,
-      })
-    
-      if (!token) {
+ export async function DELETE(request:Request, {params}:{params:{id:string}}){
+    // const token = await getToken({
+    //     req: request as any,
+    //     secret: process.env.NEXTAUTH_SECRET,
+    //   })
+    const user = await getCurrentUser()
+      if ( !user || !user.id) {
         return new Response("Unauthorized", { status: 401 })
       }   
       // Support sending id in the URL params or in the request body
@@ -71,7 +80,7 @@ export async function DELETE(request:Request, {params}:{params:{id:string}}){
     if(!todo){
         return new Response("Not found", { status: 404 })
     }
-    if (todo.userId !== token.id) {
+    if (todo.userId !== user.id) {
         return new Response("Forbidden", { status: 403 })
       }
       await prisma.todo.delete({
@@ -82,15 +91,17 @@ export async function DELETE(request:Request, {params}:{params:{id:string}}){
       return new Response(null, { status: 204 })
      
     }
+
 export async function PUT(request:Request, {params}:{params:{id:string}}){
-    const token = await getToken({
-        req: request as any,
-        secret: process.env.NEXTAUTH_SECRET,
-      })
-    
-      if (!token) {
+    // const token = await getToken({
+    //     req: request as any,
+    //     secret: process.env.NEXTAUTH_SECRET,
+    //   })
+    const user = await getCurrentUser()
+      if ( !user || !user.id) {
         return new Response("Unauthorized", { status: 401 })
       }
+  
     const data=await request.json();
     const id = params?.id || data?.id
     if (!id) {
@@ -99,12 +110,12 @@ export async function PUT(request:Request, {params}:{params:{id:string}}){
     const todo = await prisma.todo.findUnique({
         where: {
           id,
-        },
+         },
       })
       if (!todo) {
         return new Response("Not found", { status: 404 })
       }
-      if (todo.userId !== token.id) {
+      if (todo.userId !== user.id) {
         return new Response("Forbidden", { status: 403 })
       }
       const updatedTodo = await prisma.todo.update({
@@ -113,7 +124,7 @@ export async function PUT(request:Request, {params}:{params:{id:string}}){
         },
         data: {
           title: data.todoItem || todo.title,
-          completed: typeof data.completed === "boolean" ? data.completed : (data.toggleCompleted ? !todo.completed : todo.completed),
+          completed: typeof data.toggleCompleted === "boolean" ? data.toggleCompleted : todo.completed,
         },
       })
       return NextResponse.json(updatedTodo, { status: 200 })   

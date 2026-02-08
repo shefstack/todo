@@ -36,7 +36,7 @@ const {data:session}=useSession()
       const patchRes = await fetch('/api/todos', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, toggleCompleted: true })
+        body: JSON.stringify({ id, toggleCompleted: !todoItem.completed ,todoItem: todoItem.title})
       });
   
       if (!patchRes.ok) {       
@@ -61,7 +61,7 @@ const {data:session}=useSession()
       const patchRes = await fetch('/api/todos', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, todoItem: inputValueTrimmed!=='' ? inputValueTrimmed : todoItem.title })
+        body: JSON.stringify({ id, todoItem: inputValueTrimmed!=='' ? inputValueTrimmed : todoItem.title, toggleCompleted: false  })
       });
 
       if(!patchRes.ok){
@@ -75,7 +75,7 @@ const {data:session}=useSession()
     }
     if(inputValue.trim()===''){
       setError(true);
-      setInputValue(todoItem.todoItem);
+      setInputValue(todoItem.title);
       return;
     } 
     
@@ -95,7 +95,7 @@ const {data:session}=useSession()
         <button onClick={saveEdit} 
         //  disabled={inputValue.}
         className="text-md font-bold text-green-600 hover:text-green-700 px-2 py-1">Save</button>
-        <button onClick={() => {setEdit(false); setInputValue(todoItem.todoItem)}} className="text-md font-bold text-gray-400 hover:text-gray-600 px-2 py-1">Cancel</button>
+        <button onClick={() => {setEdit(false); setInputValue(todoItem.title)}} className="text-md font-bold text-gray-400 hover:text-gray-600 px-2 py-1">Cancel</button>
       </div>
 
     );

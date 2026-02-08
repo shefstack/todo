@@ -28,9 +28,9 @@ setPassword("")
   })
 
   setIsLoading(false)
-  if (!res.ok) {
-        const err = String(res.error || "Invalid credentials")
-        const status = res.status
+  if (!res?.ok) {
+        const err = String(res?.error || "Invalid credentials")
+        const status = res?.status
         if (status === 404 || /no user|not found|no account|user/i.test(err)) {
           setErrorMessage("No account found with this email.")
           setIsLoading(false)
@@ -41,7 +41,7 @@ setPassword("")
           setErrorMessage("The password you entered is incorrect.")
           setIsLoading(false)
           
-                   setErrorMessage(res.error || "An unexpected error occurred. Please try again.")
+                   setErrorMessage(res?.error || "An unexpected error occurred. Please try again.")
         setIsLoading(false)
        return
         }}

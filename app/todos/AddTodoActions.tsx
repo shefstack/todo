@@ -1,38 +1,55 @@
 "use client"
 
-import { nanoid } from "nanoid";
 import { useState } from "react";
 import { useRouter } from "next/navigation"
+import { Todo } from "@prisma/client";
 
-export default function TodoActions() {
+interface TodoActionsProps {
+  todos: Array<{
+    id: string
+    title: string
+    completed: boolean
+    userId: string
+    createdAt: Date
+  }>
+}
+interface TodoActionsProps {
+  todos: Todo[]
+}
+
+
+export default function TodoActions({ todos }: TodoActionsProps) {
     const [inputValue, setInputValue] = useState("");
     const [inputerror, setInputError] = useState(false);
     const [error, setError] = useState(false);
     const router = useRouter()
 
     async function addTodo() {
+        setInputValue("");
         const trimmedValue = inputValue.trim();
 
         if (!trimmedValue) {
             setInputError(true);
             return;
         }
-
-        const payload = { title: trimmedValue }
+const todoExists = todos.some(todo => todo.title.toLowerCase() === trimmedValue.toLowerCase());
+        const payload = !todoExists ? { title: trimmedValue } : { title: null }
+                if (todoExists) {
+            setError(true);
+            // console.error('Failed to add todo', resData);
+            return;
+        }
 
         const response = await fetch('/api/todos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         })
+const resData = await response.json()
 
-        if (!response.ok) {
-            setError(true);
-            console.error('Failed to add todo', await response.text());
-            return;
-        }
+console.log(resData ,todoExists , trimmedValue)
 
-        setInputValue(""); 
+
         router.refresh();
     }
 

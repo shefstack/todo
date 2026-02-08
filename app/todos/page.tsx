@@ -3,7 +3,7 @@ import EditTodoActions from "./EditTodoActions"
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import LogoutButton from "./Logout"
-import { authOptions } from "@/lib/auth"
+import { authOptions } from "@/lib/authOptions"
 import { prisma } from "@/lib/prisma"
 
 async function getTodos(userId: string) {
@@ -42,7 +42,7 @@ export default async function TodosPage() {
           </div>
         </header>
        <div className="mb-8">
-          <TodoActions />
+          <TodoActions todos={todos} />
         </div>
 
        <div className="space-y-4">

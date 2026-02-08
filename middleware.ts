@@ -12,6 +12,12 @@ export async function middleware(req: NextRequest) {
   const isAuthPage =
     req.nextUrl.pathname.startsWith("/auth") ||
     req.nextUrl.pathname.startsWith("/register")
+const isAdminPage = req.nextUrl.pathname.startsWith("/admin")
+
+  if (isAdminPage && (!token || token.role !== "admin")) {
+    return NextResponse.redirect(new URL("/auth", req.url))
+  }
+
 
   if (token && isAuthPage) {
     return NextResponse.redirect(new URL("/todos", req.url))
@@ -25,5 +31,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/todos/:path*", "/auth", "/register"],
+  matcher: ["/todos/:path*", "/auth", "/register", "/admin/:path*"],
 }
