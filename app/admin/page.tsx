@@ -2,15 +2,13 @@ import { prisma } from "@/lib/prisma"
 import { getCurrentUser } from "@/lib/auth"
 import { redirect } from "next/navigation"
 
-export default async function AdminPage() {
-  // 🔐 SECURITY CHECK
+export default async function AdminPage() { 
   const currentUser = await getCurrentUser()
 
   if (currentUser?.role !== "admin") {
     redirect("/todos")
   }
 
-  // ⚡ Parallel DB Queries
   const [usersCount, todosCount, users, todos] = await Promise.all([
     prisma.user.count(),
     prisma.todo.count(),
@@ -25,7 +23,7 @@ export default async function AdminPage() {
         createdAt: "desc",
       },
     }),
-    prisma.todo.findMany({
+  await prisma.todo.findMany({
       include: {
         user: {
           select: {

@@ -12,7 +12,7 @@ const [error,setError]=useState(false);
 const {data:session}=useSession()
   async function deleteFirstTodo() {
     try {
-      const delRes = await fetch('/api/todos', {
+      const delRes = await fetch(`/api/todos/${todoItem.id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: todoItem.id })
@@ -33,7 +33,7 @@ const {data:session}=useSession()
    setEdit(false);
     try {
       const id = todoItem.id;
-      const patchRes = await fetch('/api/todos', {
+      const patchRes = await fetch(`/api/todos/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, toggleCompleted: !todoItem.completed ,todoItem: todoItem.title})
@@ -58,7 +58,7 @@ const {data:session}=useSession()
     try{
       const id = todoItem.id;
       const inputValueTrimmed = inputValue.trim();
-      const patchRes = await fetch('/api/todos', {
+      const patchRes = await fetch(`/api/todos/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, todoItem: inputValueTrimmed!=='' ? inputValueTrimmed : todoItem.title, toggleCompleted: false  })

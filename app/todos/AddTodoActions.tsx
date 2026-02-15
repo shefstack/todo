@@ -5,20 +5,11 @@ import { useRouter } from "next/navigation"
 import { Todo } from "@prisma/client";
 
 interface TodoActionsProps {
-  todos: Array<{
-    id: string
-    title: string
-    completed: boolean
-    userId: string
-    createdAt: Date
-  }>
-}
-interface TodoActionsProps {
   todos: Todo[]
 }
 
 
-export default function TodoActions({ todos }: TodoActionsProps) {
+export default function AddTodoActions({ todos }: TodoActionsProps) {
     const [inputValue, setInputValue] = useState("");
     const [inputerror, setInputError] = useState(false);
     const [error, setError] = useState(false);

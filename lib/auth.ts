@@ -34,10 +34,10 @@ export async function getCurrentUser() {
   return user
 }
 
-export async function requireAdminRole() {
-  const user = await getCurrentUser()
-  if (user?.role !== "admin") {
-    throw new Error("Unauthorized")
-  }
-  return user
-}
+// export async function requireAdminRole() {
+//   const user = await getCurrentUser()
+//   if (user?.role !== "admin") {
+//     throw new Error("Unauthorized")
+//   }
+//   return user
+// }

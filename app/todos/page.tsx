@@ -1,10 +1,10 @@
-import TodoActions from "./AddTodoActions"
 import EditTodoActions from "./EditTodoActions"
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import LogoutButton from "./Logout"
 import { authOptions } from "@/lib/authOptions"
 import { prisma } from "@/lib/prisma"
+import AddTodoActions from "./AddTodoActions"
 
 async function getTodos(userId: string) {
   const todos = await prisma.todo.findMany({
@@ -42,7 +42,7 @@ export default async function TodosPage() {
           </div>
         </header>
        <div className="mb-8">
-          <TodoActions todos={todos} />
+          <AddTodoActions todos={todos} />
         </div>
 
        <div className="space-y-4">
