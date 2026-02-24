@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Full-Stack Todo Admin Application
+A production-style full-stack Todo application featuring secure authentication, role-based authorization, and an admin analytics dashboard. Built with modern Next.js App Router architecture and optimized Prisma queries.
 
-## Getting Started
+Live Demo
+  Live App:https://todo-alpha-seven-13.vercel.app
+  Repository: https://github.com/shefstack/todo
 
-First, run the development server:
+Key Features
+    Authentication:
+      Credential-based login using NextAuth
+      Password hashing with bcrypt
+      JWT session strategy
+      Secure cookie handling
+    
+    Authorization:
+      Role-based access control (Admin / User)
+      Ownership validation for todos
+      Protected routes via middleware
+      Server-side admin page protection
+      Defense-in-depth security
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Admin Dashboard
+  Total users & todos metrics
+  All users table with role badges
+  Recent todos activity
+  Server-side data fetching
+  Optimized parallel queries
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Performance Optimizations
+  Promise.all for concurrent DB queries
+  Indexed database fields
+  Pagination using take & skip
+  Avoided N+1 queries using Prisma include
+  Server Components for direct DB access
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Tech Stack
+  Frontend:
+    Next.js 14 (App Router)
+    React
+    TypeScript
+    Tailwind CSS
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+  Backend:
+    Next.js Route Handlers
+    NextAuth
+    Prisma ORM
+    PostgreSQL
 
-## Learn More
+  Deployment:
+    Vercel
 
-To learn more about Next.js, take a look at the following resources:
+Screenshots
+  Admin 
+  <img width="700" height="700" alt="image" src="https://github.com/user-attachments/assets/da725736-14d0-4598-a35d-67ecd04b7135" />
+  Todo
+<img width="700" height="500" alt="image" src="https://github.com/user-attachments/assets/a2d9d046-badb-4093-ae88-1e4144e8abe4" />
+  Login
+  <img width="700" height="500" alt="image" src="https://github.com/user-attachments/assets/bb402bc5-16da-4afd-84c2-b8e79b218837" />
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
