@@ -12,7 +12,7 @@ export default function AuthPage() {
 const router = useRouter()
 async function handleLogin(e: React.FormEvent) {
   e.preventDefault()
-setPassword("")
+
   if (!email || !password) {
     setErrorMessage("Please enter both email and password.")
     return
@@ -45,7 +45,12 @@ setPassword("")
         setIsLoading(false)
        return
         }}
+
+        if (res?.ok) {
+  setPassword("")
   router.replace("/todos")
+}
+//   router.replace("/todos")
   router.refresh()
 }
 

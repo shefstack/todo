@@ -41,7 +41,7 @@ import Credentials from "next-auth/providers/credentials"
 
                 const user= await prisma.user.findUnique({
                     where:{
-                        email: credentials.email
+                        email: credentials.email.toLowerCase()
                     }
                 })
                 if(!user) throw new Error("User not found")
