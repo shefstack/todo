@@ -15,16 +15,13 @@ export default function RegisterPage() {
         e.preventDefault()
         setLoading(true)
         setStatus({ message: "", isError: false })
-setEmail("")
-setPassword("")
+
         try {
             const res = await axios.post('/api/register', { email, password })
             if (res.status === 201) {
                 setStatus({ message: 'Registration successful! Redirecting...', isError: false })
-                setEmail("")
-                setPassword("")
-              
-                setTimeout(() => router.replace('/auth'), 2000)
+                await router.replace('/auth')
+                return
             }
         } catch (err: any) {
             const statusErr = err.response?.status
@@ -59,8 +56,10 @@ setPassword("")
                             <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                             <input
                                 type="email"
+                                autoComplete="email"
                                 required
-                                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                disabled={loading}
+                                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 text-sm sm:text-base"
                                 placeholder="name@example.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -70,8 +69,10 @@ setPassword("")
                             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                             <input
                                 type="password"
+                                autoComplete="new-password"
                                 required
-                                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                disabled={loading}
+                                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 text-sm sm:text-base"
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -89,7 +90,7 @@ setPassword("")
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors`}
+                            className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white ${loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors`}
                         >
                             {loading ? 'Registering...' : 'Register'}
                         </button>

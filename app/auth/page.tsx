@@ -9,50 +9,44 @@ export default function AuthPage() {
   const [password, setPassword] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-const router = useRouter()
-async function handleLogin(e: React.FormEvent) {
-  e.preventDefault()
+  const router = useRouter()
 
-  if (!email || !password) {
-    setErrorMessage("Please enter both email and password.")
-    return
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault()
+
+    if (!email || !password) {
+      setErrorMessage("Please enter both email and password.")
+      return
+    }
+
+    setIsLoading(true)
+    setErrorMessage("")
+
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    })
+
+    if (!res?.ok) {
+      const err = String(res?.error || "Invalid credentials")
+      const status = res?.status
+
+      if (status === 404 || /no user|not found|no account|user/i.test(err)) {
+        setErrorMessage("No account found with this email.")
+      } else if (status === 401 || /invalid credentials|wrong password|incorrect password/i.test(err)) {
+        setErrorMessage("The password you entered is incorrect.")
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again.")
+      }
+
+      setIsLoading(false)
+      return
+    }
+
+    setPassword("")
+    await router.replace("/todos")
   }
-
-  setIsLoading(true)
-  setErrorMessage("")
-
-  const res = await signIn("credentials", {
-    email,
-    password,
-    redirect: false,
-  })
-
-  setIsLoading(false)
-  if (!res?.ok) {
-        const err = String(res?.error || "Invalid credentials")
-        const status = res?.status
-        if (status === 404 || /no user|not found|no account|user/i.test(err)) {
-          setErrorMessage("No account found with this email.")
-          setIsLoading(false)
-          return
-        }
-
-        if (status === 401 || /invalid credentials|wrong password|incorrect password/i.test(err)) {
-          setErrorMessage("The password you entered is incorrect.")
-          setIsLoading(false)
-          
-                   setErrorMessage(res?.error || "An unexpected error occurred. Please try again.")
-        setIsLoading(false)
-       return
-        }}
-
-        if (res?.ok) {
-  setPassword("")
-  router.replace("/todos")
-}
-//   router.replace("/todos")
-  router.refresh()
-}
 
 //   async function handleLogin(e: React.FormEvent) {
 //     e.preventDefault()
@@ -112,11 +106,11 @@ async function handleLogin(e: React.FormEvent) {
         
 //   }
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8 sm:px-6">
+            <div className="w-full max-w-md space-y-8 bg-white p-6 sm:p-8 rounded-3xl shadow-lg border border-gray-100">
                 <div>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                        Sign in to account
+                    <h2 className="mt-6 text-center text-2xl sm:text-3xl font-extrabold text-gray-900">
+                        Sign in to your account
                     </h2>
                     <p className="mt-2 text-center text-sm text-gray-600">
                         Welcome back! Please enter your details.
@@ -131,8 +125,10 @@ async function handleLogin(e: React.FormEvent) {
                             </label>
                             <input
                                 type="email"
+                                autoComplete="email"
                                 required
-                                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                disabled={isLoading}
+                                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
                                 placeholder="name@example.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -144,8 +140,10 @@ async function handleLogin(e: React.FormEvent) {
                             </label>
                             <input
                                 type="password"
+                                autoComplete="current-password"
                                 required
-                                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                disabled={isLoading}
+                                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -154,7 +152,7 @@ async function handleLogin(e: React.FormEvent) {
                    
 
                     {errorMessage && (
-                        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-md text-center border border-red-100">
+                        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-md text-center border border-red-100" aria-live="polite">
                             {errorMessage}
                         </div>
                     )}
@@ -163,7 +161,7 @@ async function handleLogin(e: React.FormEvent) {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white transition-all ${
+                            className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white transition-all ${
                                 isLoading 
                                 ? "bg-indigo-400 cursor-not-allowed" 
                                 : "bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98]"

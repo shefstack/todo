@@ -9,7 +9,6 @@ export default function LogoutButton() {
   async function logout() {
     await signOut({ redirect: false })
     router.replace("/auth")
-    router.refresh()
   }
 
   return (
